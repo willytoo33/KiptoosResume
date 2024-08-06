@@ -215,6 +215,29 @@
     height: '90vh'
   });
 
+    /**
+   * Download Resume
+   */
+    const downloadbtn = document.querySelector(".resume-button")
+    if(downloadbtn) {
+      downloadbtn.addEventListener("click", function(){
+        // create 'link' by adding a dynamic a element
+        const link = document.createElement('a');
+        // store add a href to the link 
+        link.href = '../pdf/resume.pdf';
+        // add a download to the link
+        link.download = "KiptooResume.pdf"
+        // append the document to the body
+        document.body.appendChild(link);
+        // attach the link to the download
+        link.click();
+        // clean up
+        document.body.removeChild(link);
+      })
+    } else {
+      console.error("Element .resume-button not found!")
+    }
+
   /**
    * Portfolio details slider
    */

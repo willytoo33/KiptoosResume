@@ -397,7 +397,18 @@ section {
   align-items: center;
   border-radius: 10px;
   background-color: #0563bb;
-  
+}
+
+.section-title .resume-button:hover {
+  /* padding: 10px;
+  align-items: center;
+  border-radius: 10px; */
+  background-color: #164670;
+}
+
+.section-title .resume-button .button-text {
+  color: white;
+  font-weight: 900;
 }
 
 /*--------------------------------------------------------------
