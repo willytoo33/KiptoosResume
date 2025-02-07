@@ -1,9 +1,5 @@
 /**
- * Template Name: MyResume
- * Updated: Jan 29 2024 with Bootstrap v5.3.2
  * Template URL: https://bootstrapmade.com/free-html-bootstrap-template-my-resume/
- * Author: BootstrapMade.com
- * License: https://bootstrapmade.com/license/
  */
 (function () {
   "use strict";
@@ -238,20 +234,8 @@
     }
 
     downloadbtn.addEventListener("click", () => {
-      fetch('./assets/pdf/resume.pdf', { method: 'HEAD' })
-      .then(response => {
-        if (response.ok) {
-          console.log("The pdf is accessible")
-        } else {
-          console.error("Error loading the pdf: ", response.status)
-        }
-      })
-      .catch(error => console.error("Failed loading pdf", error))
-      
-     resumeDownload()
-    
+      resumeDownload();
     });
-    
   });
 
   function resumeDownload() {
@@ -262,8 +246,6 @@
     link.click();
     document.body.removeChild(link);
   }
-
-
 
   /**
    * Portfolio details slider
@@ -316,4 +298,84 @@
    * Initiate Pure Counter
    */
   new PureCounter();
+
+  /**
+   * Handle Route Navigation
+   */
+  // function handleRouteNavigation() {
+  //   // Find and extract section ID from the url path
+  //   const urlPathSegments = window.location.pathname.split('/');
+  //   const sectionId = urlPathSegments[urlPathSegments.length - 1];
+
+  //   // Find the section that matches the ID and scroll into view
+  //   if (sectionId) {
+  //     const section = document.getElementById(sectionId);
+  //     if (section) {
+  //       section.scrollIntoView({behavior: 'smooth'});
+  //       document.querySelectorAll('.nav-link').forEach(link => {
+  //         link.classList.toggle('active', link.getAttribute('href') === `/${sectionId}`)
+  //       })
+  //     }
+  //   }    
+  // }
+
+  /**
+   * Event Litsener for navigation
+   */
+  // document.addEventListener('click', (e) => {
+  //   const link = e.target.closest('.nav-link');
+  //   if (link && link.href.startsWith(window.location.origin) ) {
+  //     e.preventDefault();
+  //     const path = new URL(link.href).pathname;
+  //     history.pushState({}, '', path);
+  //     handleRouteNavigation();
+  //   }
+  // });
+
+  // window.addEventListener('load', handleRouteNavigation);
+  // window.addEventListener('popstate', handleRouteNavigation);
+
+    /**
+   * GitHub Pages Routing Solution
+   */
+    (function handleGitHubPagesRouting() {
+      // Redirect from 404.html
+      if (sessionStorage.redirect) {
+        const redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        window.history.replaceState(null, null, redirect);
+      }
+  
+      // Route handling function
+      function handleRoute() {
+        const basePath = location.pathname.replace('/index.html', '');
+        const sectionId = basePath.split('/').pop() || 'hero';
+        
+        // Scroll to section
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+  
+        // Update active state
+        document.querySelectorAll('.nav-link').forEach(link => {
+          const linkPath = new URL(link.href).pathname;
+          link.classList.toggle('active', linkPath === location.pathname);
+        });
+      }
+  
+      // Event listeners
+      document.addEventListener('click', e => {
+        const link = e.target.closest('.nav-link');
+        if (link) {
+          e.preventDefault();
+          const url = new URL(link.href);
+          window.history.pushState({}, '', url.pathname);
+          handleRoute();
+        }
+      });
+  
+      window.addEventListener('popstate', handleRoute);
+      window.addEventListener('load', handleRoute);
+    })();
 })();
