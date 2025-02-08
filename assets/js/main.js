@@ -299,82 +299,49 @@
    */
   new PureCounter();
 
-  /**
-   * Handle Route Navigation
-   */
-  // function handleRouteNavigation() {
-  //   // Find and extract section ID from the url path
-  //   const urlPathSegments = window.location.pathname.split('/');
-  //   const sectionId = urlPathSegments[urlPathSegments.length - 1];
-
-  //   // Find the section that matches the ID and scroll into view
-  //   if (sectionId) {
-  //     const section = document.getElementById(sectionId);
-  //     if (section) {
-  //       section.scrollIntoView({behavior: 'smooth'});
-  //       document.querySelectorAll('.nav-link').forEach(link => {
-  //         link.classList.toggle('active', link.getAttribute('href') === `/${sectionId}`)
-  //       })
-  //     }
-  //   }    
-  // }
-
-  /**
-   * Event Litsener for navigation
-   */
-  // document.addEventListener('click', (e) => {
-  //   const link = e.target.closest('.nav-link');
-  //   if (link && link.href.startsWith(window.location.origin) ) {
-  //     e.preventDefault();
-  //     const path = new URL(link.href).pathname;
-  //     history.pushState({}, '', path);
-  //     handleRouteNavigation();
-  //   }
-  // });
-
-  // window.addEventListener('load', handleRouteNavigation);
-  // window.addEventListener('popstate', handleRouteNavigation);
-
     /**
    * GitHub Pages Routing Solution
    */
     (function handleGitHubPagesRouting() {
-      // Redirect from 404.html
+      // Handle 404.html redirect
       if (sessionStorage.redirect) {
-        const redirect = sessionStorage.redirect;
+        const redirectUrl = sessionStorage.redirect;
         delete sessionStorage.redirect;
-        window.history.replaceState(null, null, redirect);
+        window.history.replaceState({}, '', redirectUrl);
       }
-  
-      // Route handling function
+    
+      // Path configuration
+      const repoName = '/KiptooResume'; 
+      const basePath = location.pathname.startsWith(repoName) 
+        ? repoName 
+        : '';
+    
       function handleRoute() {
-        const basePath = location.pathname.replace('/index.html', '');
-        const sectionId = basePath.split('/').pop() || 'hero';
+        const path = window.location.pathname.replace(basePath, '');
+        const sectionId = path.split('/').filter(p => p)[0] || 'hero';
         
         // Scroll to section
         const section = document.getElementById(sectionId);
         if (section) {
           section.scrollIntoView({ behavior: 'smooth' });
+          // Update active state
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === sectionId);
+          });
         }
-  
-        // Update active state
-        document.querySelectorAll('.nav-link').forEach(link => {
-          const linkPath = new URL(link.href).pathname;
-          link.classList.toggle('active', linkPath === location.pathname);
-        });
       }
-  
+    
       // Event listeners
       document.addEventListener('click', e => {
         const link = e.target.closest('.nav-link');
-        if (link) {
+        if (link && link.href.includes(window.location.host)) {
           e.preventDefault();
-          const url = new URL(link.href);
-          window.history.pushState({}, '', url.pathname);
+          const path = new URL(link.href).pathname.replace(basePath, '');
+          window.history.pushState({}, '', basePath + '/' + path);
           handleRoute();
         }
       });
-  
+    
       window.addEventListener('popstate', handleRoute);
       window.addEventListener('load', handleRoute);
     })();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <script>
-  sessionStorage.redirect = location.href;
-  location.replace(location.origin); 
+  const repoName = '/KiptooResume';
+  sessionStorage.redirect = location.href.replace(repoName, '');
+  location.replace(location.origin + repoName); 
 </script>
