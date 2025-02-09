@@ -299,50 +299,49 @@
    */
   new PureCounter();
 
-    /**
-   * GitHub Pages Routing Solution
-   */
-    (function handleGitHubPagesRouting() {
-      // Handle 404.html redirect
-      if (sessionStorage.redirect) {
-        const redirectUrl = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        window.history.replaceState({}, '', redirectUrl);
-      }
+/**
+ * GitHub Pages Routing Solution (CORRECTED)
+ */
+(function handleGitHubPagesRouting() {
+  // Handle 404 redirect
+  if (sessionStorage.redirect) {
+    const redirect = sessionStorage.redirect;
+    delete sessionStorage.redirect;
+    window.history.replaceState({}, '', redirect);
+  }
+
+  // Configure paths
+  const repoName = '/KiptoosResume';
+  const basePath = location.pathname.startsWith(repoName) ? repoName : '';
+
+  // Route handler
+  function handleRoute() {
+    const path = window.location.pathname.replace(basePath, '');
+    const sectionId = path.split('/')[1] || 'hero'; // Get first path segment
     
-      // Path configuration
-      const repoName = '/KiptooResume'; 
-      const basePath = location.pathname.startsWith(repoName) 
-        ? repoName 
-        : '';
-    
-      function handleRoute() {
-        const path = window.location.pathname.replace(basePath, '');
-        const sectionId = path.split('/').filter(p => p)[0] || 'hero';
-        
-        // Scroll to section
-        const section = document.getElementById(sectionId);
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth' });
-          // Update active state
-          document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.toggle('active', link.getAttribute('href') === sectionId);
-          });
-        }
-      }
-    
-      // Event listeners
-      document.addEventListener('click', e => {
-        const link = e.target.closest('.nav-link');
-        if (link && link.href.includes(window.location.host)) {
-          e.preventDefault();
-          const path = new URL(link.href).pathname.replace(basePath, '');
-          window.history.pushState({}, '', basePath + '/' + path);
-          handleRoute();
-        }
+    // Scroll to section
+    const section = document.getElementById(sectionId);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop - 100,
+        behavior: 'smooth'
       });
-    
-      window.addEventListener('popstate', handleRoute);
-      window.addEventListener('load', handleRoute);
-    })();
+    }
+  }
+
+  // Modified click handler
+  document.addEventListener('click', e => {
+    const link = e.target.closest('.nav-link');
+    if (link && link.href.includes(window.location.host)) {
+      e.preventDefault();
+      const url = new URL(link.href);
+      window.history.pushState({}, '', url.pathname);
+      handleRoute();
+    }
+  });
+
+  // Event listeners
+  window.addEventListener('popstate', handleRoute);
+  window.addEventListener('load', handleRoute);
+})();
 })();
